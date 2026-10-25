@@ -1,5 +1,7 @@
 package com.taller.bibliotecajuegos.domain.models;
 
+import jakarta.persistence.Entity;
+
 /**
  * Representa un juego físico dentro de la biblioteca.
  * 
@@ -10,9 +12,15 @@ package com.taller.bibliotecajuegos.domain.models;
  * @author Sistema Biblioteca de video juegos
  * @version 1.0
  */
+
+@Entity // 1. Indica que es una tabla en la BD
 public class Juego_Fisico extends Contenido_Digital {
     /** Peso del juego físico en gramos. */
     private double pesoGramos;
+
+    // 2. Constructor vacío para JPA
+    protected Juego_Fisico() {
+    }
 
     /**
      * Crea un nuevo juego físico con los detalles especificados.

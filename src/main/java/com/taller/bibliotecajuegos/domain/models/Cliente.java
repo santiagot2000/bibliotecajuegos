@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+
 /**
  * Representa a un cliente del sistema de la biblioteca de juegos.
  * 
@@ -14,8 +16,11 @@ import java.util.UUID;
  * @author Sistema Biblioteca de video juegos
  * @version 1.0
  */
+
+@Entity // 1. Indica que es una tabla en la BD
 public class Cliente {
     /** Identificador único del cliente generado internamente (UUID a Long). */
+    @Id // 2. Indica que este es el Primary Key
     private Long id;
     
     /** Nombre del cliente. */
@@ -25,7 +30,13 @@ public class Cliente {
     private String email;
     
     /** Lista de contenidos digitales prestados actualmente al cliente. */
+    // 3. Relación: Un cliente puede tener muchos juegos prestados
+    @OneToMany(targetEntity = Contenido_Digital.class)
     private List<Contenido_Digital> juegosPrestados;
+
+    // 4. Constructor vacío para JPA
+    protected Cliente() {
+    }
 
     /**
      * Crea un nuevo cliente inicializando su lista de juegos prestados vacía

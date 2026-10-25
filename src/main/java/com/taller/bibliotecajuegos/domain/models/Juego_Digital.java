@@ -1,5 +1,7 @@
 package com.taller.bibliotecajuegos.domain.models;
 
+import jakarta.persistence.Entity;
+
 /**
  * Representa un juego digital dentro de la biblioteca.
  * 
@@ -11,9 +13,15 @@ package com.taller.bibliotecajuegos.domain.models;
  * @author Sistema Biblioteca de video juegos
  * @version 1.0
  */
+
+@Entity // 1. Indica que es una tabla en la BD
 public class Juego_Digital extends Contenido_Digital {
     /** Tamaño del juego digital en gigabytes (GB). */
     private double tamanoGB;
+
+    // 2. Constructor vacío para JPA
+    protected Juego_Digital() {
+    }
 
     /**
      * Crea un nuevo juego digital con los detalles especificados.

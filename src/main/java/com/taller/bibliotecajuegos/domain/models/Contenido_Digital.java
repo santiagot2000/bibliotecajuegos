@@ -2,6 +2,9 @@ package com.taller.bibliotecajuegos.domain.models;
 
 import java.util.UUID;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+
 /**
  * Representa el contenido digital que puede formar parte de la biblioteca,
  * como un videojuego disponible para renta.
@@ -13,9 +16,13 @@ import java.util.UUID;
  * @author Sistema Biblioteca de videojuegos
  * @version 1.0
  */
+
+@Entity // 1. Indica que es una tabla en la BD
+@Inheritance (strategy = InheritanceType.JOINED) // 2. Estrategia de herencia
 public abstract class Contenido_Digital {
     /** Identificador único del id (UUID). */
-    private final Long id;
+    @Id // 3. Indica que este es el Primary Key
+    private Long id;
     /** Título del videojuego. */
     private String titulo;
     /** Año de lanzamiento del videojuego. */
@@ -24,6 +31,10 @@ public abstract class Contenido_Digital {
     private double precioBase;
     /** Indica si el contenido está disponible para renta. */
     private boolean disponible;
+
+    // 4. CONSTRUCTOR VACÍO OBLIGATORIO PARA JPA
+    protected Contenido_Digital() {
+    }
 
     /**
      * Crea contenido digital. El identificador se asignará al guardar la
