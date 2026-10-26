@@ -2,51 +2,58 @@ package com.taller.bibliotecajuegos.domain.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 
 /**
  * Representa a un cliente del sistema de la biblioteca de juegos.
- * 
+ *
  * <p>Mantiene la información personal del cliente y la lista de juegos
  * que tiene actualmente prestados. Aplica la regla de negocio que impide
  * tener más de 3 juegos alquilados simultáneamente.</p>
- * 
- * @author Sistema Biblioteca de video juegos
+ *
+ * @author Sistema Biblioteca de videojuegos
  * @version 1.0
  */
-
-@Entity // 1. Indica que es una tabla en la BD
+@Entity
 public class Cliente {
-    /** Identificador único del cliente generado internamente (UUID a Long). */
-    @Id // 2. Indica que este es el Primary Key
+
+    /** Identificador único del cliente (clave primaria). */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /** Nombre del cliente. */
     private String nombre;
-    
+
     /** Correo electrónico del cliente. */
     private String email;
-    
-    /** Lista de contenidos digitales prestados actualmente al cliente. */
-    // 3. Relación: Un cliente puede tener muchos juegos prestados
-    @OneToMany(targetEntity = Contenido_Digital.class)
-    private List<Contenido_Digital> juegosPrestados;
 
-    // 4. Constructor vacío para JPA
+    /** Lista de contenidos digitales prestados actualmente al cliente. */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "cliente_juegos_prestados")
+    private List<ContenidoDigital> juegosPrestados = new ArrayList<>();
+
+    /**
+     * Constructor vacío obligatorio para JPA.
+     */
     protected Cliente() {
     }
 
     /**
-     * Crea un nuevo cliente inicializando su lista de juegos prestados vacía
-     * y asignando un identificador único automáticamente.
+     * Crea un nuevo cliente inicializando su lista de juegos prestados vacía.
+     * El identificador se asigna automáticamente al guardar en la base de datos.
      *
      * @param nombre nombre del cliente
      * @param email correo electrónico del cliente
      */
     public Cliente(String nombre, String email) {
-        this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE; // Genera un ID único
         this.nombre = nombre;
         this.email = email;
         this.juegosPrestados = new ArrayList<>();
@@ -59,78 +66,87 @@ public class Cliente {
      * @param juego el contenido digital que el cliente desea alquilar
      * @return {@code true} si se pudo realizar el préstamo, {@code false} si ya alcanzó el límite
      */
-    public boolean prestarJuego(Contenido_Digital juego) {
-        if (this.juegosPrestados.size() >= 3) {
-            return false; // Se rechaza el préstamo por regla de negocio
+    public boolean prestarJuego(ContenidoDigital juego) {
+        if (getJuegosPrestados().size() >= 3) {
+            return false;
         }
-        
-        this.juegosPrestados.add(juego);
+        getJuegosPrestados().add(juego);
         return true;
     }
 
     /**
      * Devuelve un juego previamente prestado por el cliente.
-     * 
+     *
      * @param juego el contenido digital a devolver
      * @return {@code true} si se devolvió correctamente, {@code false} si el cliente no lo tenía
      */
-    public boolean devolverJuego(Contenido_Digital juego) {
-        return this.juegosPrestados.remove(juego);
+    public boolean devolverJuego(ContenidoDigital juego) {
+        return getJuegosPrestados().remove(juego);
     }
 
-    /** 
+    /**
      * Obtiene el identificador del cliente.
-     * @return id del cliente 
+     *
+     * @return id del cliente
      */
     public Long getId() {
         return id;
     }
 
-    /** 
+    /**
      * Obtiene el nombre del cliente.
-     * @return nombre del cliente 
+     *
+     * @return nombre del cliente
      */
     public String getNombre() {
         return nombre;
     }
 
-    /** 
+    /**
      * Actualiza el nombre del cliente.
-     * @param nombre nuevo nombre del cliente 
+     *
+     * @param nombre nuevo nombre del cliente
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    /** 
+    /**
      * Obtiene el correo electrónico del cliente.
-     * @return email del cliente 
+     *
+     * @return email del cliente
      */
     public String getEmail() {
         return email;
     }
 
-    /** 
+    /**
      * Actualiza el correo electrónico del cliente.
-     * @param email nuevo correo electrónico del cliente 
+     *
+     * @param email nuevo correo electrónico del cliente
      */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /** 
+    /**
      * Obtiene la lista de los juegos prestados actualmente.
-     * @return lista de juegos prestados 
+     *
+     * @return lista de juegos prestados
      */
-    public List<Contenido_Digital> getJuegosPrestados() {
+    public List<ContenidoDigital> getJuegosPrestados() {
+        if (juegosPrestados == null) {
+            juegosPrestados = new ArrayList<>();
+        }
         return juegosPrestados;
     }
 
-    /** 
+    /**
      * Actualiza la lista completa de juegos prestados.
-     * @param juegosPrestados nueva lista de juegos 
+     *
+     * @param juegosPrestados nueva lista de juegos
      */
-    public void setJuegosPrestados(List<Contenido_Digital> juegosPrestados) {
+    public void setJuegosPrestados(List<ContenidoDigital> juegosPrestados) {
         this.juegosPrestados = juegosPrestados;
     }
 }

@@ -1,29 +1,44 @@
 package com.taller.bibliotecajuegos.controllers;
 
-import com.taller.bibliotecajuegos.domain.models.Cliente;
-import com.taller.bibliotecajuegos.domain.repositories.ClienteRepository;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestController // Habilita los endpoints REST
-@RequestMapping("/api/clientes") // Ruta base para este controlador
+import com.taller.bibliotecajuegos.domain.models.Cliente;
+import com.taller.bibliotecajuegos.services.ClienteService;
+
+/**
+ * Controlador REST encargado de registrar clientes en el sistema.
+ *
+ * @author Sistema Biblioteca de videojuegos
+ * @version 1.0
+ */
+@RestController
+@RequestMapping("/api/clientes")
 public class ClienteController {
 
-    private final ClienteRepository clienteRepository;
+    /** Servicio con la lógica de registro de clientes. */
+    private final ClienteService clienteService;
 
-    // Inyección del repositorio mediante el constructor
-    public ClienteController(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    /**
+     * Inyección del servicio mediante el constructor.
+     *
+     * @param clienteService servicio de clientes
+     */
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
     /**
      * POST /api/clientes
      * Registra un nuevo cliente en la base de datos.
-     * 
-     * @param cliente Datos del cliente en formato JSON
-     * @return El cliente guardado con su ID generado
+     *
+     * @param cliente datos del cliente en formato JSON
+     * @return el cliente guardado con su ID generado
      */
     @PostMapping
     public Cliente registrarCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+        return clienteService.registrarCliente(cliente);
     }
 }
