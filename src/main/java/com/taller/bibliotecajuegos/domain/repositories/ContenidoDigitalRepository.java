@@ -1,11 +1,25 @@
 package com.taller.bibliotecajuegos.domain.repositories;
 
-import com.taller.bibliotecajuegos.domain.models.Contenido_Digital;
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface ContenidoDigitalRepository extends JpaRepository<Contenido_Digital, Long> {
-    // Spring Boot detecta el nombre del método y crea la consulta SQL automáticamente 
-    // para traernos solo los juegos donde "disponible" sea true.
-    List<Contenido_Digital> findByDisponibleTrue();
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.taller.bibliotecajuegos.domain.models.ContenidoDigital;
+
+/**
+ * Repositorio JPA para persistir y consultar el catálogo de juegos
+ * (físicos y digitales) mediante la jerarquía {@link ContenidoDigital}.
+ *
+ * @author Sistema Biblioteca de videojuegos
+ * @version 1.0
+ */
+public interface ContenidoDigitalRepository extends JpaRepository<ContenidoDigital, Long> {
+
+    /**
+     * Obtiene los juegos que están disponibles para alquiler.
+     * Spring Data deriva la consulta a partir del nombre del método.
+     *
+     * @return lista de contenidos con {@code disponible = true}
+     */
+    List<ContenidoDigital> findByDisponibleTrue();
 }
